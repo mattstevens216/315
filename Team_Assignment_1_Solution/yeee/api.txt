@@ -1,0 +1,267 @@
+Database:
+    Database():
+        Creates an empty database object that contains no tables
+
+        Args: none
+        Return: none
+
+    int add_table(string, Table):
+        Adds a table to the database as the name given.
+
+        Args: string table_name, Table t
+        Return: int
+
+            - table_name:
+                    this string is the name of the table that is added to the database
+                        1. Allows for whitespace
+                        2. Can not be an empty string
+                        3. The name must not already exist in the database, ie you cant have duplicate table names
+
+            - t:
+                    this is a table that is added to the database
+
+            Return values:
+                0 for failure
+                1 for success
+
+    int drop_table(string):
+        Removes a table from the list of tables in the Database that matches the given name
+
+        Args: string table_name
+        Return: int
+
+            - table_name
+                    this string is the table name that will be used while looking up a particular table
+                        1. name must be in the database
+
+            Return values:
+                0 for failure
+                1 for success
+
+    vector<string> list_table():
+        returns a vector of table names in the database
+
+        Args: none
+        Return: vector<string>
+
+    vector<Table> get_tables():
+        returns a vector of Tables in the database
+
+        Args: none
+        Return: vector<Table>
+
+    Table query(char*, char*, char*):
+        Queries the database based on the arguments provided and returns the resulting table. The select argument
+        should specify the attributes that should be used for the output table. This means that you could use an
+        attribute in the where string that you do not wish to be output from your query. For operators in the where
+        string, string comparisons must have the attribute names on the left hand side and the strings to compare to
+        on the right hand side. Query will return a table of all records that matched the where argument. The return
+        table will only have the attributes specified in the select string even if the attribute was used in the
+        where argument.
+
+        Args: char* select, char* from, char* where
+        Return: Table
+
+            -select:
+                takes a string that lists the attribute names for the output table or a "*" to keep all attributes.
+                    1. If you are inputting a list of names, each entry must be separated by a ','
+            -from:
+                takes a single table name as a string
+                    1. Matches exactly, including whitespace
+            -where:
+                references to the attribute names
+                    1. Supports =,<>,>,<,>=,<= string comparisons
+                    2. Supports AND, OR, NOT
+                    3. Parses parentheses
+
+            Return values:
+                empty table on failure
+                table on success
+
+Record:
+    An arbitrarily long ordered set of strings
+
+    Record():
+        Initializes a record with list of empty strings of the size 0.
+
+        Args: none
+        Return: None
+
+    Record(int):
+        Initializes a record with list of empty strings of the size specified.
+
+        Args: int size
+        Return: None
+
+            -size
+                The number of elements to be initialized, to null, in the record
+
+    int get_size():
+        Returns the size of the Record
+
+        Args: none
+        Return: int
+
+    push_back(string):
+        appends the string to the end of the record and increases the size of the record by 1.
+
+        Args: string str
+        Return: void
+
+    remove(int):
+        erases the string at the index given and decreases the size of the record by 1.
+
+        Args: int index
+        Return: void
+
+    [] operator is overloaded. This allows for indexing and accessing the Record
+    
+Table:
+    Table():
+        creates an empty table without any attributes.
+
+        Arguments: none
+        Returns: void
+
+    Table(vector<string>):
+        creates an empty table with the attributes provided.
+        
+        Arguments: vector<string> attribute_list
+        Returns: void
+
+    int add_attribute(string):
+        Adds a column to the end of the table with th given attribute name. All records for the new entry will
+        have an empty string added to them for the new column.
+
+        Arguments: string attribute_name
+        Returns: int
+        
+        attribute_name can not be an empty string. attribute_name can not be already in the table.
+
+        Return values:
+            0 for failure
+            1 for success
+
+    int delete_attribute(string):
+        Deletes the specified attribute from the table. All records will have their value for this column removed
+        and their size will be decramented.
+        
+        Arguments: string attribute_name
+        Returns: int
+        
+        attribute_name can not be an empty string. attribute_name must be in the table.
+
+        Return values:
+            0 for failure
+            1 for success
+
+    void insert_record(Record):
+        Tries to insert a new record into the table.
+
+        Arguments: Record r
+        Returns: int
+
+        Record can not be larger than the table, ie have a greater size than there are attributes in the table.
+        If key is specified, the new record must have a unique and non empty entry for the attribute specified
+        as the key. If the new records size is smaller than the table, it will resize the record to fit by adding
+        empty strings, as entries, to the end.
+        
+        Return values:
+            0 for failure
+            1 for success
+
+    vector<string> get_attributes():
+        Returns a vector of attribute names for the table.
+        
+        Arguments: none
+        Returns: vector<string>
+
+    int get_size():
+        Returns the number of records in the table.
+
+        Arguments: none
+        Returns: int
+
+    Record* get_record(int):
+        Returns a pointer to the record, in the table, at the index provided.
+        
+        Arguments: int index
+        Returns: Record*
+
+        The index provided must exist in the table, ie non negative and not larger than the number of records in the
+        table.
+
+        Return values:
+            NULL for failure
+            Record* for success
+    
+    int specify_key(string):
+        Sets an attribute, with the same name as the string provided, as the key for the table.
+
+        Arguments: string key
+        Returns: int
+        
+        The name given must exist in the table.
+        All record entries for the attribute specified must not be empty and must be unique for that attribute
+        to become the key.
+
+        Return values:
+            0 for failure
+            1 for success
+
+    Table cross_join(Table one, Table two):
+        Reurns the cartesian product of the two tables, cross join. The attributes of the resulting table will
+        be table ones attributes then table twos attributes.
+        
+        Arguments: Table, Table
+        Returns: Table
+
+        *Not a member of the table class
+
+    Table natural_join(Table one, Table two):
+        Returns a natural join of the two tables. Like attributes will be the first attributes in the resulting
+        table, indexed in the order that they are found from table one. Records that have matching entries at these
+        attributes will be joined, such that only one of the like attribute entires exist for each like attribute
+        and the entries will respect the ordering of the attributes for the resulting table.
+
+        Arguments: Table, Table
+        Returns: Table
+
+        *Not a member of the table class
+
+    int count(string):
+        counts the number of non empty entries for the attribute specified.
+        
+        Arguments: string attribute_name
+        Returns: int
+
+        attribute_name can not be an empty string. attribute_name must exist in the table
+
+        Return values:
+            0 for failure
+            the number of non empty entries for success
+
+    string max(string):
+        Returns the maximum entry value for the attribute specified. Empty entries are not considered.
+
+        Arguments: string attribute_name
+        Returns: string
+        
+        attribute_name can not be an empty string. attribute_name must exist in the table
+
+        Return values:
+            "" for failure
+            the maximum entrie value for success
+
+    string min(string s):
+        Returns the minimum entry value for the attribute specified. Empty entries are not considered.
+
+        Arguments: string attribute_name
+        Returns: string
+        
+        attribute_name can not be an empty string. attribute_name must exist in the table
+
+        Return values:
+            "" for failure
+            the minimum entrie value for success
+        

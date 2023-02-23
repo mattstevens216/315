@@ -1,0 +1,13 @@
+//********** NOTE **********//
+This is only the API and the included *.h and *.cpp files complie
+but have NO FUNCTIONALITY
+
+IF a main.cpp is inluced with test cases the program can be compiled with the 
+$make all OR $make library commands
+
+IF there is no main.cpp the makefile will fail
+$g++ -shared -fpic -std=c++11 -o library.so *.cpp
+will compile it instead.
+
+We compiled on the linux servers, there for a .so file was included as opposed to
+a .dll file
